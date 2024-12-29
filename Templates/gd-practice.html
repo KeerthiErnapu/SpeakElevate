@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Group Discussion Practice</title>
+</head>
+<body>
+    <h1>Group Discussion (GD) Practice</h1>
+    <p><strong>Topic: </strong><span id="topic">Click the button below to generate a topic.</span></p>
+    <button id="generate-topic">Generate New Topic</button>
+    <br><br>
+    <h2>Instructions:</h2>
+    <p>Take a few minutes to speak about the topic. This will help improve your communication skills for group discussions.</p>
+    <br>
+    <a href="/interview-tests">Back to Interview Tests</a>
+
+    <script>
+        // Fetch and display random topic
+        document.getElementById('generate-topic').addEventListener('click', function() {
+            fetch('/generate-topic')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('topic').textContent = data.topic;
+                })
+                .catch(error => console.log('Error generating topic:', error));
+        });
+    </script>
+</body>
+</html>
