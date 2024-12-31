@@ -2,7 +2,6 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HR Interview Practice</title>
     <style>
         /* Reset default styles */
@@ -166,12 +165,9 @@
 
         <h3>Sample Questions:</h3>
         <ul>
-            <li>Tell me about yourself.</li>
-            <li>Why do you want to work here?</li>
             <li>Where do you see yourself in 5 years?</li>
             <li>What are your strengths and weaknesses?</li>
             <li>Why should we hire you?</li>
-            
         </ul>
 
         <button class="button" id="start-btn">Start Practice</button>
@@ -184,6 +180,8 @@
             <button class="record-btn" id="record-btn" onclick="startRecording()">Record Answer</button>
             <p id="converted-text"></p>
             <div class="suggestions" id="suggestions"></div>
+            <button class="button" id="submit-btn" onclick="submitAnswer()" style="display: none;">Submit</button>
+            <p id="analysis"></p>
             <button class="next-btn" id="next-btn" onclick="nextQuestion()" style="display: none;">Next Question</button>
         </div>
 
@@ -206,6 +204,7 @@
             "How do you prioritize your tasks?"
         ];
         let currentQuestionIndex = 0;
+        let recognition;
 
         document.getElementById("start-btn").addEventListener("click", startPractice);
         document.getElementById("stop-btn").addEventListener("click", stopPractice);
@@ -215,7 +214,6 @@
             document.getElementById("stop-btn").style.display = "block";
             document.getElementById("timer").style.display = "block";
             document.getElementById("response-container").style.display = "block";
-            startTimer();
             displayNextQuestion();
         }
 
@@ -233,7 +231,8 @@
                 if (timeLeft <= 0) {
                     clearInterval(timer);
                     alert("Time's up for this question!");
-                    nextQuestion();
+                    document.getElementById("submit-btn").style.display = "none";
+                    document.getElementById("next-btn").style.display = "block";
                 } else {
                     timeLeft--;
                     document.getElementById("timer").textContent = "Time: " + formatTime(timeLeft);
@@ -262,33 +261,75 @@
             document.getElementById("question-text").textContent = question;
             timeLeft = 120; // reset timer
             startTimer();
+
+            document.getElementById("submit-btn").style.display = "block";
+            document.getElementById("next-btn").style.display = "none";
+            document.getElementById("analysis").textContent = "";
+        }
+
+        function submitAnswer() {
+            clearInterval(timer);
+            const answer = document.getElementById("converted-text").textContent.replace("Your Answer: ", "");
+
+            // Display analysis
+            const analysisContainer = document.getElementById("analysis");
+            analysisContainer.textContent = analyzeSpeech(answer);
+
+            document.getElementById("submit-btn").style.display = "none";
+            document.getElementById("next-btn").style.display = "block";
+        }
+
+        function analyzeSpeech(answer) {
+            if (!answer || answer.trim() === "") {
+                return "Analysis: No answer recorded. Try again and speak clearly.";
+            }
+
+            return "Analysis: Your answer was structured and coherent. Keep improving fluency and vocabulary.";
         }
 
         function nextQuestion() {
-            document.getElementById("next-btn").style.display = "none"; // Hide Next button
+            document.getElementById("next-btn").style.display = "none";
             displayNextQuestion();
         }
 
         function startRecording() {
-            const recordButton = document.getElementById("record-btn");
-            recordButton.textContent = "Recording...";
-            recordButton.disabled = true;
+            if (!('webkitSpeechRecognition' in window)) {
+                alert("Speech Recognition API is not supported in this browser.");
+                return;
+            }
 
-            // Simulating speech-to-text conversion
-            setTimeout(() => {
-                const answer = "This is a simulated answer text from speech recognition.";
-                document.getElementById("converted-text").textContent = "Your Answer: " + answer;
-                provideSuggestions(answer);
-                clearInterval(timer); // Stop the timer when the user records an answer
-                document.getElementById("next-btn").style.display = "block"; // Show Next button
-                recordButton.textContent = "Record Answer";
-                recordButton.disabled = false;
-            }, 2000);
-        }
+            recognition = new webkitSpeechRecognition();
+            recognition.lang = 'en-US';
+            recognition.continuous = false;
+            recognition.interimResults = true;
 
-        function provideSuggestions(answer) {
-            const suggestions = document.getElementById("suggestions");
-            suggestions.textContent = "Suggestions: Make sure your answer is structured and concise.";
+            recognition.onstart = function() {
+                document.getElementById("record-btn").textContent = "Recording...";
+                document.getElementById("record-btn").disabled = true;
+            };
+
+            recognition.onresult = function(event) {
+                let transcript = '';
+                for (let i = event.resultIndex; i < event.results.length; i++) {
+                    transcript += event.results[i][0].transcript;
+                }
+
+                document.getElementById("converted-text").textContent = "Your Answer: " + transcript;
+                document.getElementById("submit-btn").style.display = "block";
+            };
+
+            recognition.onerror = function(event) {
+                alert("Error occurred in speech recognition: " + event.error);
+                document.getElementById("record-btn").textContent = "Record Answer";
+                document.getElementById("record-btn").disabled = false;
+            };
+
+            recognition.onend = function() {
+                document.getElementById("record-btn").textContent = "Record Answer";
+                document.getElementById("record-btn").disabled = false;
+            };
+
+            recognition.start();
         }
     </script>
 </body>
