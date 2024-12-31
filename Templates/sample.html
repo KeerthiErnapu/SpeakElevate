@@ -91,17 +91,98 @@
         </div>
 
         <!-- Interview Test Button -->
-        <button id="interview-tests" class="button">Interview Tests</button>
+        <h2>Practice Interview Questions</h2>
+        <button id="interview-tests" class="button">Interview Practice</button>
     </main>
 
     <script>
-        // Existing speech recognition and topic generation code...
+        let recognition;
+        let finalTranscript = "";
+
+        if ('webkitSpeechRecognition' in window) {
+            recognition = new webkitSpeechRecognition();
+            recognition.continuous = true;
+            recognition.interimResults = true;
+
+            recognition.onstart = () => {
+                console.log("Speech recognition started.");
+            };
+
+            recognition.onresult = (event) => {
+                finalTranscript = "";
+                for (let i = event.resultIndex; i < event.results.length; i++) {
+                    if (event.results[i].isFinal) {
+                        finalTranscript += event.results[i][0].transcript;
+                    }
+                }
+                document.getElementById("transcribed-text").innerText = `You said: ${finalTranscript}`;
+            };
+
+            recognition.onerror = (event) => {
+                console.error("Speech recognition error: ", event.error);
+            };
+
+            recognition.onend = () => {
+                console.log("Speech recognition stopped.");
+            };
+        } else {
+            alert("Your browser does not support Speech Recognition. Please use Chrome.");
+        }
+
+        document.getElementById("generate-topic").addEventListener("click", () => {
+            const topics = [
+                "Describe your favorite holiday destination.",
+                "Discuss the importance of technology in education.",
+                "Talk about a memorable event in your life.",
+                "What are the advantages of learning multiple languages?",
+                "How do you spend your weekends?",
+                "What is your favorite hobby and why?"
+            ];
+            // Generate a random topic
+            const randomTopic = topics[Math.floor(Math.random() * topics.length)];
+            
+            // Display the topic in the "topic" div
+            document.getElementById("topic").innerText = `Your topic: ${randomTopic}`;
+            document.getElementById("topic").style.marginTop = "10px";
+            document.getElementById("topic").style.fontSize = "18px";
+            document.getElementById("topic").style.color = "#333";
+        });
+
+        document.getElementById("start-recording").addEventListener("click", () => {
+            finalTranscript = "";
+            recognition.start();
+            document.getElementById("start-recording").disabled = true;
+            document.getElementById("stop-recording").disabled = false;
+        });
+
+        document.getElementById("stop-recording").addEventListener("click", () => {
+            recognition.stop();
+            document.getElementById("start-recording").disabled = false;
+            document.getElementById("stop-recording").disabled = true;
+
+            // Send the recorded text to the backend for analysis
+            fetch("/analyze", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ text: finalTranscript }),
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    document.getElementById("feedback-container").style.display = "block";
+                    document.getElementById("grammar-text").innerText = data.grammar_issues || "No issues found.";
+                    document.getElementById("corrected-text").innerText = data.corrected_text || "No corrections required.";
+                    document.getElementById("suggestions-text").innerText = data.word_suggestions || "No suggestions available.";
+                })
+                .catch((error) => {
+                    console.error("Error during analysis:", error);
+                });
+        });
 
         const interviewTestsButton = document.getElementById("interview-tests");
-        
-        // When "Interview Tests" button is clicked, redirect to interview choice page
         interviewTestsButton.onclick = () => {
-            window.location.href = "/interview-tests";  // Correct URL path for Flask route
+            window.location.href = "/interview-tests"; // Redirect to the interview test route
         };
     </script>
 </body>
