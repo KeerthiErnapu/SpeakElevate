@@ -3,36 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SQL Practice</title>
+    <title>Speech Recognition Test</title>
     <style>
-        /* Reset default styles */
+        /* Styles remain the same as your previous request */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
-        /* Body styling */
         body {
+            display: flex;
+            min-height: 100vh;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(to right, #00c6ff, #0072ff);
             color: #fff;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            text-align: center;
             padding: 20px;
+            justify-content: center;
         }
 
-        /* Container styling */
         .container {
+            display: flex;
+            flex-direction: row;
+            width: 100%;
+            max-width: 1200px;
+            justify-content: space-between;
+        }
+
+        .difficulty-section {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            max-width: 300px;
+        }
+
+        .practice-section {
+            flex: 3;
             background: rgba(255, 255, 255, 0.1);
             padding: 40px;
             border-radius: 10px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-            max-width: 600px;
-            width: 100%;
         }
 
         h1 {
@@ -50,7 +62,7 @@
 
         .buttons {
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             gap: 20px;
             margin-bottom: 30px;
         }
@@ -75,25 +87,37 @@
             background-color: #003f75;
         }
 
-        a {
-            text-decoration: none;
+        #practiceArea {
+            display: none;
+        }
+
+        #questionArea {
+            margin-bottom: 20px;
+        }
+
+        #controls button {
+            margin: 10px;
+            padding: 10px 20px;
+        }
+
+        .analysis {
+            margin-top: 20px;
             font-size: 1.1em;
             color: #ffffff;
-            margin-top: 20px;
-            display: inline-block;
-            transition: color 0.3s;
         }
 
-        a:hover {
-            color: #00c6ff;
+        #answerArea {
+            width: 100%;
+            height: 100px;
+            padding: 10px;
+            font-size: 1em;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            margin-bottom: 20px;
+            background-color: #f9f9f9;
+            color: #333;
         }
 
-        .link-section {
-            margin-top: 40px;
-            font-size: 1.2em;
-        }
-
-        /* Responsive Design */
         @media (max-width: 768px) {
             h1 {
                 font-size: 2em;
@@ -103,28 +127,175 @@
                 padding: 12px 24px;
                 font-size: 1em;
             }
+
+            .container {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .difficulty-section {
+                width: 100%;
+                max-width: 600px;
+            }
+
+            .practice-section {
+                width: 100%;
+                max-width: 600px;
+                margin-top: 20px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>CN Practice</h1>
-        <p>Choose the difficulty level for CN problems:</p>
-
-        <div class="buttons">
-            <button class="button" onclick="window.location.href='/cn/easy'">Easy</button>
-            <button class="button" onclick="window.location.href='/cn/moderate'">Moderate</button>
-            <button class="button" onclick="window.location.href='/cn/hard'">Hard</button>
+        <div class="difficulty-section">
+            <h1>SQL Practice</h1>
+            <p>Choose difficulty level:</p>
+            <div class="buttons">
+                <button class="button" onclick="startPractice('easy')">Easy</button>
+                <button class="button" onclick="startPractice('moderate')">Moderate</button>
+                <button class="button" onclick="startPractice('hard')">Hard</button>
+            </div>
         </div>
 
-        <a href="/technical-practice">Back to Technical Practice</a>
-
-        <div class="link-section">
-            <p>For additional practice and learning, visit the following:</p>
-            <a href="https://www.geeksforgeeks.org/computer-network-tutorials/" target="_blank">GeeksforGeeks CN Tutorial</a><br>
-            <a href="https://www.javatpoint.com/computer-network-tutorial" target="_blank">Javatpoint CN Tutorial</a>
-
+        <div class="practice-section" id="practiceArea">
+            <div id="questionArea">
+                <p id="questionText"></p>
+            </div>
+            <div>
+                <button class="button" id="startRecordingBtn" onclick="startRecording()" style="display:none;">Start Speaking</button>
+                <button class="button" id="stopRecordingBtn" onclick="stopRecording()" style="display:none;">Stop Speaking</button>
+            </div>
+            <p id="transcriptionText"></p>
+            <div id="controls">
+                <button id="startBtn" onclick="startTest()">Start Test</button>
+                <button id="submitBtn" onclick="submitAnswer()" style="display:none;">Submit</button>
+                <button id="nextBtn" onclick="showNextQuestion()" style="display:none;">Next</button>
+                <button id="stopBtn" onclick="stopTest()">Stop Test</button>
+            </div>
+            <div class="analysis" id="analysis" style="display:none;">
+                <!-- Real-time suggestions will go here -->
+            </div>
         </div>
     </div>
+
+    <script>
+        const easyQuestions = [
+            "What is a computer network?",
+            "What is the difference between LAN, WAN, and MAN?",
+            "What are the types of network topologies?",
+            "What is an IP address?",
+            "What is DNS (Domain Name System)?"
+        ];
+
+        const moderateQuestions = [
+            "What is the OSI model?",
+            "What is TCP/IP?",
+            "What is a MAC address?",
+            "What is ARP (Address Resolution Protocol)?",
+            "What is the difference between a hub, a switch, and a router?"
+            
+        ];
+
+        const hardQuestions = [
+            "Explain the concept of subnetting.",
+            "What is the purpose of the three-way handshake in TCP?",
+            "What is NAT (Network Address Translation)?",
+            "Describe the working of the Dijkstra algorithm in routing.",
+            "What is the difference between distance-vector and link-state routing protocols?"
+        ];
+
+        let currentQuestionIndex = 0;
+        let selectedQuestions = [];
+        let transcription = "";
+        let recognition;
+
+        // Initialize SpeechRecognition once it's needed
+        function initializeRecognition() {
+            recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+            recognition.continuous = true;
+            recognition.interimResults = true;
+            recognition.onresult = (event) => {
+                let result = event.results[event.resultIndex];
+                transcription = result[0].transcript;
+                document.getElementById('transcriptionText').textContent = transcription;
+                analyzeSpeech(transcription);
+            };
+        }
+
+        function startPractice(level) {
+            document.getElementById('practiceArea').style.display = 'block';
+            document.getElementById('startBtn').style.display = 'none';
+            if (level === 'easy') selectedQuestions = easyQuestions;
+            else if (level === 'moderate') selectedQuestions = moderateQuestions;
+            else selectedQuestions = hardQuestions;
+            showNextQuestion();
+        }
+
+        function startTest() {
+            showNextQuestion();
+        }
+
+        function showNextQuestion() {
+            if (currentQuestionIndex < selectedQuestions.length) {
+                document.getElementById('questionText').textContent = selectedQuestions[currentQuestionIndex];
+                document.getElementById('startRecordingBtn').style.display = 'inline-block';
+                document.getElementById('stopRecordingBtn').style.display = 'none';
+                document.getElementById('submitBtn').style.display = 'inline-block';
+                document.getElementById('transcriptionText').textContent = '';
+                document.getElementById('analysis').style.display = 'none';
+                currentQuestionIndex++;
+            } else {
+                alert("You've completed the practice!");
+                resetPractice();
+            }
+        }
+
+        function startRecording() {
+            if (!recognition) {
+                initializeRecognition(); // Initialize the recognition if it's not initialized yet
+            }
+            recognition.start();
+            document.getElementById('startRecordingBtn').style.display = 'none';
+            document.getElementById('stopRecordingBtn').style.display = 'inline-block';
+        }
+
+        function stopRecording() {
+            recognition.stop();
+            document.getElementById('startRecordingBtn').style.display = 'inline-block';
+            document.getElementById('stopRecordingBtn').style.display = 'none';
+        }
+
+        function submitAnswer() {
+            analyzeSpeech(transcription);
+            document.getElementById('submitBtn').style.display = 'none';
+            document.getElementById('nextBtn').style.display = 'inline-block';
+        }
+
+        function stopTest() {
+            recognition.stop();
+            alert("Test Stopped");
+        }
+
+        function resetPractice() {
+            currentQuestionIndex = 0;
+            document.getElementById('practiceArea').style.display = 'none';
+        }
+
+        function analyzeSpeech(speech) {
+            let analysis = "";
+
+            if (speech.includes("um") || speech.includes("uh")) {
+                analysis += "Try to speak more fluently. Avoid filler words like 'um' or 'uh'.<br>";
+            }
+
+            if (speech.length < 3) {
+                analysis += "Speak louder and more clearly.<br>";
+            }
+
+            document.getElementById('analysis').innerHTML = analysis;
+            document.getElementById('analysis').style.display = 'block';
+        }
+    </script>
 </body>
 </html>
