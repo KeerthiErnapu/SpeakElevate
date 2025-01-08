@@ -1,5 +1,4 @@
 flask
 language_tool_python
 bcrypt
-random
 flask_pymongo
