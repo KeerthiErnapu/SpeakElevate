@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SpeakElevate - Improve Your Communication Skills</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(to bottom right, #6a11cb, #2575fc);
+            color: white;
+        }
+        header {
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        header .logo {
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+        header nav a {
+            margin: 0 1rem;
+            text-decoration: none;
+            color: white;
+            font-weight: 400;
+            transition: color 0.3s;
+        }
+        header nav a:hover {
+            color: #f8b400;
+        }
+        .hero {
+            text-align: center;
+            padding: 5rem 2rem;
+        }
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+        }
+        .hero p {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            max-width: 600px;
+            margin: 0 auto 2rem auto;
+        }
+        .btn {
+            background: linear-gradient(to right, #f8b400, #ff7300);
+            color: white;
+            padding: 0.8rem 2rem;
+            font-size: 1.2rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+        }
+        .btn:active {
+            transform: translateY(1px);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+        .features {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 2rem;
+            padding: 3rem 2rem;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        .feature {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            padding: 2rem;
+            text-align: center;
+            max-width: 300px;
+            color: white;
+        }
+        .feature h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        .footer {
+            background-color: rgba(0, 0, 0, 0.8);
+            padding: 1.5rem;
+            text-align: center;
+        }
+        .footer p {
+            font-size: 0.9rem;
+        }
+        a {
+            text-decoration: none;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">SpeakElevate</div>
+        <nav>
+            <a href="#about">About</a>
+            <a href="#features">Features</a>
+            <a href="#contact">Contact</a>
+        </nav>
+    </header>
+    <section class="hero">
+        <h1>Take Your Communication Skills to the Next Level</h1>
+        <p>SpeakElevate is your personal guide to becoming a more confident and effective speaker. Practice, analyze, and improve with cutting-edge tools.</p>
+        <!-- Button redirects to the signup page -->
+        <a href="/signup"><button class="btn">Sign Up Now</button></a>
+    </section>
+    <section id="features" class="features">
+        <div class="feature">
+            <h3>Dynamic Topics</h3>
+            <p>Speak on dynamically generated topics and hone your impromptu speaking skills.</p>
+        </div>
+        <div class="feature">
+            <h3>Real-Time Analysis</h3>
+            <p>Receive instant feedback on fluency, pronunciation, and vocabulary.</p>
+        </div>
+        <div class="feature">
+            <h3>Personalized Suggestions</h3>
+            <p>Get tailored advice to improve your specific weak areas.</p>
+        </div>
+    </section>
+    <footer class="footer">
+        <p>© 2025 SpeakElevate. All Rights Reserved. | <a href="#privacy" style="color: #f8b400;">Privacy Policy</a></p>
+    </footer>
+</body>
+</html>
