@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>HR Interview Practice</title>
+    <style>
+        /* Reset default styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Body styling */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* Main container */
+        .container {
+            background: #ffffff;
+            border-radius: 10px;
+            padding: 30px;
+            width: 100%;
+            max-width: 800px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #0078d7;
+            margin-bottom: 20px;
+        }
+
+        h3 {
+            color: #0078d7;
+            margin-bottom: 10px;
+        }
+
+        p {
+            font-size: 1.1em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+            text-align: left;
+            margin: 20px;
+        }
+
+        ul li {
+            font-size: 1.1em;
+            margin-bottom: 10px;
+        }
+
+        .button {
+            padding: 10px 20px;
+            font-size: 1.2em;
+            background-color: #0078d7;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 20px;
+        }
+
+        .button:hover {
+            background-color: #005bb5;
+        }
+
+        .timer {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #ff5722;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .response-container {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .response-container p {
+            font-size: 1.1em;
+        }
+
+        .record-btn {
+            padding: 15px 30px;
+            background-color: #ff5722;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.2em;
+            margin-top: 20px;
+            transition: background-color 0.3s;
+        }
+
+        .record-btn:hover {
+            background-color: #d43f00;
+        }
+
+        .suggestions {
+            margin-top: 20px;
+            font-size: 1.1em;
+            color: #333;
+        }
+
+        .next-btn {
+            padding: 10px 20px;
+            font-size: 1.2em;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        .next-btn:hover {
+            background-color: #218838;
+        }
+
+        a {
+            font-size: 1.1em;
+            color: #0078d7;
+            text-decoration: none;
+            display: block;
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+
+            .button, .record-btn, .next-btn {
+                font-size: 1em;
+                padding: 10px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>HR Interview Practice</h1>
+        <p>This page will help you practice HR interview questions. Try to answer the questions confidently and structure your responses clearly.</p>
+
+        <h3>Sample Questions:</h3>
+        <ul>
+            <li>Where do you see yourself in 5 years?</li>
+            <li>What are your strengths and weaknesses?</li>
+            <li>Why should we hire you?</li>
+        </ul>
+
+        <button class="button" id="start-btn">Start Practice</button>
+        <button class="button" id="stop-btn" style="display: none;">Stop Test</button>
+
+        <div class="timer" id="timer">Time: 02:00</div>
+
+        <div class="response-container" id="response-container" style="display: none;">
+            <p id="question-text"></p>
+            <button class="record-btn" id="record-btn" onclick="startRecording()">Record Answer</button>
+            <p id="converted-text"></p>
+            <div class="suggestions" id="suggestions"></div>
+            <button class="button" id="submit-btn" onclick="submitAnswer()" style="display: none;">Submit</button>
+            <p id="analysis"></p>
+            <button class="next-btn" id="next-btn" onclick="nextQuestion()" style="display: none;">Next Question</button>
+        </div>
+
+        <a href="/interview-tests">Back to Interview Tests</a>
+    </div>
+
+    <script>
+        let timer;
+        let timeLeft = 120; // 120 seconds (2 minutes) per question
+        const questions = [
+            "Tell me about yourself.",
+            "Why do you want to work here?",
+            "Where do you see yourself in 5 years?",
+            "What are your strengths and weaknesses?",
+            "Why should we hire you?",
+            "Describe a challenging situation you overcame.",
+            "What motivates you to perform at your best?",
+            "How do you handle stress and pressure?",
+            "What is your greatest achievement?",
+            "How do you prioritize your tasks?"
+        ];
+        let currentQuestionIndex = 0;
+        let recognition;
+
+        document.getElementById("start-btn").addEventListener("click", startPractice);
+        document.getElementById("stop-btn").addEventListener("click", stopPractice);
+
+        function startPractice() {
+            document.getElementById("start-btn").style.display = "none";
+            document.getElementById("stop-btn").style.display = "block";
+            document.getElementById("timer").style.display = "block";
+            document.getElementById("response-container").style.display = "block";
+            displayNextQuestion();
+        }
+
+        function stopPractice() {
+            clearInterval(timer);
+            alert("Test stopped.");
+            document.getElementById("stop-btn").style.display = "none";
+            document.getElementById("start-btn").style.display = "block";
+            document.getElementById("response-container").style.display = "none";
+            document.getElementById("timer").style.display = "none";
+        }
+
+        function startTimer() {
+            timer = setInterval(function () {
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    alert("Time's up for this question!");
+                    document.getElementById("submit-btn").style.display = "none";
+                    document.getElementById("next-btn").style.display = "block";
+                } else {
+                    timeLeft--;
+                    document.getElementById("timer").textContent = "Time: " + formatTime(timeLeft);
+                }
+            }, 1000);
+        }
+
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const remainingSeconds = seconds % 60;
+            return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
+        }
+
+        function displayNextQuestion() {
+            if (questions.length === 0) {
+                alert("No more questions available.");
+                return;
+            }
+
+            const randomQuestionIndex = Math.floor(Math.random() * questions.length);
+            const question = questions[randomQuestionIndex];
+
+            // Remove the asked question from the pool
+            questions.splice(randomQuestionIndex, 1);
+
+            document.getElementById("question-text").textContent = question;
+            timeLeft = 120; // reset timer
+            startTimer();
+
+            document.getElementById("submit-btn").style.display = "block";
+            document.getElementById("next-btn").style.display = "none";
+            document.getElementById("analysis").textContent = "";
+        }
+
+        function submitAnswer() {
+            clearInterval(timer);
+            const answer = document.getElementById("converted-text").textContent.replace("Your Answer: ", "");
+
+            // Display analysis
+            const analysisContainer = document.getElementById("analysis");
+            analysisContainer.textContent = analyzeSpeech(answer);
+
+            document.getElementById("submit-btn").style.display = "none";
+            document.getElementById("next-btn").style.display = "block";
+        }
+
+        function analyzeSpeech(answer) {
+            if (!answer || answer.trim() === "") {
+                return "Analysis: No answer recorded. Try again and speak clearly.";
+            }
+
+            return "Analysis: Your answer was structured and coherent. Keep improving fluency and vocabulary.";
+        }
+
+        function nextQuestion() {
+            document.getElementById("next-btn").style.display = "none";
+            displayNextQuestion();
+        }
+
+        function startRecording() {
+            if (!('webkitSpeechRecognition' in window)) {
+                alert("Speech Recognition API is not supported in this browser.");
+                return;
+            }
+
+            recognition = new webkitSpeechRecognition();
+            recognition.lang = 'en-US';
+            recognition.continuous = false;
+            recognition.interimResults = true;
+
+            recognition.onstart = function() {
+                document.getElementById("record-btn").textContent = "Recording...";
+                document.getElementById("record-btn").disabled = true;
+            };
+
+            recognition.onresult = function(event) {
+                let transcript = '';
+                for (let i = event.resultIndex; i < event.results.length; i++) {
+                    transcript += event.results[i][0].transcript;
+                }
+
+                document.getElementById("converted-text").textContent = "Your Answer: " + transcript;
+                document.getElementById("submit-btn").style.display = "block";
+            };
+
+            recognition.onerror = function(event) {
+                alert("Error occurred in speech recognition: " + event.error);
+                document.getElementById("record-btn").textContent = "Record Answer";
+                document.getElementById("record-btn").disabled = false;
+            };
+
+            recognition.onend = function() {
+                document.getElementById("record-btn").textContent = "Record Answer";
+                document.getElementById("record-btn").disabled = false;
+            };
+
+            recognition.start();
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interview Tests</title>
+    <style>
+        /* Reset some default styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Set the overall background color and font */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #64b3f4, #4169e1);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        /* Center the content container */
+        h1 {
+            font-size: 2.5em;
+            color: white;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        /* Style for the list */
+        ul {
+            list-style-type: none;
+            padding: 0;
+            text-align: center;
+        }
+
+        /* Style for each list item (practice section) */
+        li {
+            margin: 20px 0;
+        }
+
+        /* Style for the links */
+        a {
+            text-decoration: none;
+            font-size: 1.2em;
+            color: white;
+            background-color: #4169e1;
+            padding: 15px 30px;
+            border-radius: 30px;
+            display: inline-block;
+            transition: all 0.3s ease-in-out;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Hover effect for links */
+        a:hover {
+            background-color: #64b3f4;
+            transform: translateY(-4px);
+            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Add a hover effect for the container for a slight zoom effect */
+        body:hover {
+            transform: scale(1.05);
+            transition: transform 0.3s ease;
+        }
+
+        /* Additional styling for mobile responsiveness */
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 2em;
+            }
+
+            a {
+                font-size: 1em;
+                padding: 10px 20px;
+            }
+        }
+
+        /* Style for the Go Back button */
+        .go-back-btn {
+            background-color: #ff6347;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+            margin-top: 20px;
+        }
+
+        /* Hover effect for Go Back button */
+        .go-back-btn:hover {
+            background-color: #ff4500;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <h1>Choose your practice section:</h1>
+        <ul>
+            <li><a href="/gd-practice">Group Discussion (GD) Practice</a></li>
+            <li><a href="/technical-practice">Technical Interview Practice</a></li>
+            <li><a href="/hr-practice">HR Interview Practice</a></li>
+        </ul>
+
+        <!-- Go Back Button -->
+        <button class="go-back-btn" onclick="window.location.href = '/sample';">Go Back</button>
+    </div>
+</body>
+</html>

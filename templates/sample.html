@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personalized Language Coach</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f4f7;
+        }
+        header {
+            background-color: #0078d7;
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+        }
+        
+        header h1 {
+            margin: auto;
+            text-align: center;
+            flex-grow: 1;
+        }
+        
+        .logout-btn {
+            background-color: #ff4b5c;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        
+        .logout-btn:hover {
+            background-color: #d43f4c;
+        }
+        
+        main {
+            padding: 20px;
+        }
+        .button {
+            background-color: #0078d7;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .button:hover {
+            background-color: #005bb5;
+        }
+        .feedback-container {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: white;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .feedback-section {
+            margin-bottom: 15px;
+        }
+        .feedback-section h4 {
+            margin-bottom: 10px;
+            font-size: 18px;
+            color: #0078d7;
+        }
+        .feedback-section p {
+            margin: 0;
+            font-size: 14px;
+            color: #333;
+        }
+        .divider {
+            height: 1px;
+            background-color: #ccc;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Personalized Language Coach</h1>
+        <button class="logout-btn" onclick="window.location.href = '/login';">Logout</button>
+
+    </header>
+    <main>
+        <h2>Dynamic Topic Generation</h2>
+        <button id="generate-topic" class="button">Generate Topic</button>
+        <div id="topic"></div>
+
+        <h2>Speak and Get Feedback</h2>
+        <button id="start-recording" class="button">Start Speaking</button>
+        <button id="stop-recording" class="button" disabled>Stop</button>
+        <div id="transcribed-text"></div>
+        <div id="feedback-container" class="feedback-container" style="display: none;">
+            <div class="feedback-section" id="grammar-feedback">
+                <h4>Grammar Issues</h4>
+                <p id="grammar-text">No issues found.</p>
+            </div>
+            <div class="divider"></div>
+            <div class="feedback-section" id="corrected-feedback">
+                <h4>Corrected Text</h4>
+                <p id="corrected-text">No corrections required.</p>
+            </div>
+            <div class="divider"></div>
+            <div class="feedback-section" id="suggestion-feedback">
+                <h4>Word Suggestions</h4>
+                <p id="suggestions-text">No suggestions available.</p>
+            </div>
+        </div>
+
+        <!-- Interview Test Button -->
+        <h2>Practice Interview Questions</h2>
+        <button id="interview-tests" class="button">Interview Practice</button>
+    </main>
+
+    <script>
+        let recognition;
+        let finalTranscript = "";
+
+        if ('webkitSpeechRecognition' in window) {
+            recognition = new webkitSpeechRecognition();
+            recognition.continuous = true;
+            recognition.interimResults = true;
+
+            recognition.onstart = () => {
+                console.log("Speech recognition started.");
+            };
+
+            recognition.onresult = (event) => {
+                finalTranscript = "";
+                for (let i = event.resultIndex; i < event.results.length; i++) {
+                    if (event.results[i].isFinal) {
+                        finalTranscript += event.results[i][0].transcript;
+                    }
+                }
+                document.getElementById("transcribed-text").innerText = `You said: ${finalTranscript}`;
+            };
+
+            recognition.onerror = (event) => {
+                console.error("Speech recognition error: ", event.error);
+            };
+
+            recognition.onend = () => {
+                console.log("Speech recognition stopped.");
+            };
+        } else {
+            alert("Your browser does not support Speech Recognition. Please use Chrome.");
+        }
+
+        document.getElementById("generate-topic").addEventListener("click", () => {
+            const topics = [
+                "Describe your favorite holiday destination.",
+                "Discuss the importance of technology in education.",
+                "Talk about a memorable event in your life.",
+                "What are the advantages of learning multiple languages?",
+                "How do you spend your weekends?",
+                "What is your favorite hobby and why?"
+            ];
+            // Generate a random topic
+            const randomTopic = topics[Math.floor(Math.random() * topics.length)];
+            
+            // Display the topic in the "topic" div
+            document.getElementById("topic").innerText = `Your topic: ${randomTopic}`;
+            document.getElementById("topic").style.marginTop = "10px";
+            document.getElementById("topic").style.fontSize = "18px";
+            document.getElementById("topic").style.color = "#333";
+        });
+
+        document.getElementById("start-recording").addEventListener("click", () => {
+            finalTranscript = "";
+            recognition.start();
+            document.getElementById("start-recording").disabled = true;
+            document.getElementById("stop-recording").disabled = false;
+        });
+
+        document.getElementById("stop-recording").addEventListener("click", () => {
+            recognition.stop();
+            document.getElementById("start-recording").disabled = false;
+            document.getElementById("stop-recording").disabled = true;
+
+            // Send the recorded text to the backend for analysis
+            fetch("/analyze", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ text: finalTranscript }),
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    document.getElementById("feedback-container").style.display = "block";
+                    document.getElementById("grammar-text").innerText = data.grammar_issues || "No issues found.";
+                    document.getElementById("corrected-text").innerText = data.corrected_text || "No corrections required.";
+                    document.getElementById("suggestions-text").innerText = data.word_suggestions || "No suggestions available.";
+                })
+                .catch((error) => {
+                    console.error("Error during analysis:", error);
+                });
+        });
+
+        const interviewTestsButton = document.getElementById("interview-tests");
+        interviewTestsButton.onclick = () => {
+            window.location.href = "/interview-tests"; // Redirect to the interview test route
+        };
+    </script>
+</body>
+</html>
