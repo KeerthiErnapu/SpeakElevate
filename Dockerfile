@@ -1,21 +1,14 @@
-# Use an official base image with Java support
+# Use a base image with an OS (e.g., Debian) or Java-specific image
 FROM openjdk:17-jdk-slim
 
-# Set the working directory inside the container
-WORKDIR /app
+# Update package lists
+RUN apt-get update -y
 
-# Copy your application code to the container
-COPY . /app
+# Install Java Development Kit (JDK)
+RUN apt-get install -y openjdk-17-jdk
 
-# Install additional dependencies if needed
-RUN apt-get update && apt-get install -y \
-    curl \
-    && rm -rf /var/lib/apt/lists/*
+# Verify installation
+RUN java -version
 
-# Expose the port your application runs on (adjust as necessary)
-EXPOSE 8080
-
-# Command to run your Java application
-# Replace 'App' with your compiled Java class name (if using .class files) 
-# or JAR file name (if using a packaged JAR)
-CMD ["java", "-jar", "your-application.jar"]
+# Default command (this can be customized based on your use case)
+CMD ["bash"]
