@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Speech Recognition Test</title>
+    <style>
+        /* Styles remain the same as your previous request */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            display: flex;
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(90deg, #87CEEB, #4682B4); /* Blue gradient background */
+
+            color: #fff;
+            padding: 20px;
+            justify-content: center;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: row;
+            width: 100%;
+            max-width: 1200px;
+            justify-content: space-between;
+        }
+
+        .difficulty-section {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            max-width: 300px;
+        }
+
+        .practice-section {
+            flex: 3;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            color: #ffffff;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        p {
+            font-size: 1.2em;
+            color: #f0f0f0;
+            margin-bottom: 20px;
+        }
+
+        .buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .button {
+            padding: 15px 30px;
+            font-size: 1.1em;
+            background-color: #0078d7;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        .button:hover {
+            background-color: #005fa3;
+            transform: translateY(-5px);
+        }
+
+        .button:active {
+            background-color: #003f75;
+        }
+
+        #practiceArea {
+            display: none;
+        }
+
+        #questionArea {
+            margin-bottom: 20px;
+        }
+
+        #controls button {
+            margin: 10px;
+            padding: 10px 20px;
+        }
+
+        .analysis {
+            margin-top: 20px;
+            font-size: 1.1em;
+            color: #ffffff;
+        }
+
+        #answerArea {
+            width: 100%;
+            height: 100px;
+            padding: 10px;
+            font-size: 1em;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            margin-bottom: 20px;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2em;
+            }
+
+            .button {
+                padding: 12px 24px;
+                font-size: 1em;
+            }
+
+            .container {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .difficulty-section {
+                width: 100%;
+                max-width: 600px;
+            }
+
+            .practice-section {
+                width: 100%;
+                max-width: 600px;
+                margin-top: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="difficulty-section">
+            <h1>AI Practice</h1>
+            <p>Choose difficulty level:</p>
+            <div class="buttons">
+                <button class="button" onclick="startPractice('easy')">Easy</button>
+                <button class="button" onclick="startPractice('moderate')">Moderate</button>
+                <button class="button" onclick="startPractice('hard')">Hard</button>
+            </div>
+        </div>
+
+        <div class="practice-section" id="practiceArea">
+            <div id="questionArea">
+                <p id="questionText"></p>
+            </div>
+            <div>
+                <button class="button" id="startRecordingBtn" onclick="startRecording()" style="display:none;">Start Speaking</button>
+                <button class="button" id="stopRecordingBtn" onclick="stopRecording()" style="display:none;">Stop Speaking</button>
+            </div>
+            <p id="transcriptionText"></p>
+            <div id="controls">
+                <button id="startBtn" onclick="startTest()">Start Test</button>
+                <button id="submitBtn" onclick="submitAnswer()" style="display:none;">Submit</button>
+                <button id="nextBtn" onclick="showNextQuestion()" style="display:none;">Next</button>
+                <button id="stopBtn" onclick="stopTest()">Stop Test</button>
+            </div>
+            <div class="analysis" id="analysis" style="display:none;">
+                <!-- Real-time suggestions will go here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const easyQuestions = [
+        "What is Artificial Intelligence?",
+        "What are the types of Artificial Intelligence?",
+        "What is the difference between AI, Machine Learning, and Deep Learning?",
+        "What is a heuristic in AI?",
+        "What are the applications of Artificial Intelligence?"
+        ];
+
+        const moderateQuestions = [
+            "What is search in Artificial Intelligence?",
+    "What is the difference between informed and uninformed search algorithms?",
+    "What is the role of knowledge representation in AI?",
+    "What are decision trees in AI?",
+    "What is a rule-based system in AI?"
+            
+        ];
+
+        const hardQuestions = [
+           "What is natural language processing (NLP) and how is it used in AI?",
+    "Explain the concept of reinforcement learning in AI.",
+    "What is the Turing Test and how does it relate to AI?",
+    "What are the challenges in developing general AI?",
+    "What is the difference between supervised and unsupervised learning in AI?",
+    "What is an expert system and how does it work?",
+    "Explain how a genetic algorithm works in the context of AI.",
+    "What is the importance of the concept of neural networks in AI?",
+    "How does a Markov decision process (MDP) relate to reinforcement learning?",
+    "What are the ethical implications of Artificial Intelligence?",
+    "What is a chatbot, and how does AI enable it to work?",
+    "What is a multi-agent system in AI?",
+    "Explain the concept of computer vision in Artificial Intelligence.",
+    "What are some of the limitations of AI in solving real-world problems?",
+    "What is deep reinforcement learning, and how does it differ from regular reinforcement learning?",
+    "What are the main algorithms used in AI for classification tasks?",
+    "What is the role of AI in autonomous systems (e.g., self-driving cars)?",
+    "Explain the concept of the AI winter and how it impacted research in the field.",
+    "What are adversarial attacks in AI, and how can they be mitigated?"
+        ];
+
+        let currentQuestionIndex = 0;
+        let selectedQuestions = [];
+        let transcription = "";
+        let recognition;
+
+        // Initialize SpeechRecognition once it's needed
+        function initializeRecognition() {
+            recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+            recognition.continuous = true;
+            recognition.interimResults = true;
+            recognition.onresult = (event) => {
+                let result = event.results[event.resultIndex];
+                transcription = result[0].transcript;
+                document.getElementById('transcriptionText').textContent = transcription;
+                analyzeSpeech(transcription);
+            };
+        }
+
+        function startPractice(level) {
+            document.getElementById('practiceArea').style.display = 'block';
+            document.getElementById('startBtn').style.display = 'none';
+            if (level === 'easy') selectedQuestions = easyQuestions;
+            else if (level === 'moderate') selectedQuestions = moderateQuestions;
+            else selectedQuestions = hardQuestions;
+            showNextQuestion();
+        }
+
+        function startTest() {
+            showNextQuestion();
+        }
+
+        function showNextQuestion() {
+            if (currentQuestionIndex < selectedQuestions.length) {
+                document.getElementById('questionText').textContent = selectedQuestions[currentQuestionIndex];
+                document.getElementById('startRecordingBtn').style.display = 'inline-block';
+                document.getElementById('stopRecordingBtn').style.display = 'none';
+                document.getElementById('submitBtn').style.display = 'inline-block';
+                document.getElementById('transcriptionText').textContent = '';
+                document.getElementById('analysis').style.display = 'none';
+                currentQuestionIndex++;
+            } else {
+                alert("You've completed the practice!");
+                resetPractice();
+            }
+        }
+
+        function startRecording() {
+            if (!recognition) {
+                initializeRecognition(); // Initialize the recognition if it's not initialized yet
+            }
+            recognition.start();
+            document.getElementById('startRecordingBtn').style.display = 'none';
+            document.getElementById('stopRecordingBtn').style.display = 'inline-block';
+        }
+
+        function stopRecording() {
+            recognition.stop();
+            document.getElementById('startRecordingBtn').style.display = 'inline-block';
+            document.getElementById('stopRecordingBtn').style.display = 'none';
+        }
+
+        function submitAnswer() {
+            analyzeSpeech(transcription);
+            document.getElementById('submitBtn').style.display = 'none';
+            document.getElementById('nextBtn').style.display = 'inline-block';
+        }
+
+        function stopTest() {
+            recognition.stop();
+            alert("Test Stopped");
+        }
+
+        function resetPractice() {
+            currentQuestionIndex = 0;
+            document.getElementById('practiceArea').style.display = 'none';
+        }
+
+        function analyzeSpeech(speech) {
+            let analysis = "";
+
+            if (speech.includes("um") || speech.includes("uh")) {
+                analysis += "Try to speak more fluently. Avoid filler words like 'um' or 'uh'.<br>";
+            }
+
+            if (speech.length < 3) {
+                analysis += "Use more words.<br>";
+            }
+
+            document.getElementById('analysis').innerHTML = analysis;
+            document.getElementById('analysis').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
