@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, jsonify
-import language_tool_python
+import requests
 from flask_pymongo import PyMongo
 import random
 import bcrypt
@@ -9,7 +9,7 @@ app.config["MONGO_URI"] = "mongodb://localhost:27017/SpeakElevate"
 mongo = PyMongo(app)
 
 # Initialize LanguageTool API for grammar and spelling checks
-tool = language_tool_python.LanguageTool('en-US')
+
 
 # Set of 20 predefined topics
 predefined_topics = [
@@ -201,36 +201,46 @@ def analyze_text():
         if not text:
             return jsonify({'error': 'No text provided'}), 400
 
-        # Check for grammar and spelling mistakes using LanguageTool
-        matches = tool.check(text)
+        # Send the text to LanguageTool API for grammar and spelling check
+        response = requests.post(
+            'https://api.languagetool.org/v2/check',
+            data={'text': text, 'language': 'en-US'}
+        )
 
-        # Create a list for feedback
-        grammar_issues = []
-        spelling_feedback = []
-        word_suggestions = []
+        # If the API request was successful
+        if response.status_code == 200:
+            json_response = response.json()
 
-        for match in matches:
-            if "MORFOLOGIK_RULE_EN_US" in match.ruleId or "SPELLER" in match.ruleId:
-                # This is a spelling mistake
-                spelling_feedback.append(f"Spelling mistake: '{match.context}' should be corrected to '{match.replacements}'")
-            else:
-                # This is a grammar issue
-                grammar_issues.append(match.message)
-            
-            # Check if replacements exist for the words that are wrongly used
-            if match.replacements:
-                for replacement in match.replacements:
-                    word_suggestions.append(f"{match.context} -> use {replacement}")
+            # Prepare feedback
+            grammar_issues = []
+            spelling_feedback = []
+            word_suggestions = []
 
-        # Prepare the feedback
-        feedback = {
-            'grammar_issues': grammar_issues if grammar_issues else ["No grammar issues found"],
-            'spelling_feedback': spelling_feedback if spelling_feedback else ["No spelling issues found"],
-            'word_suggestions': word_suggestions if word_suggestions else ["No word usage errors found"],
-            'corrected_text': language_tool_python.utils.correct(text, matches)
-        }
+            for match in json_response['matches']:
+                if 'MORFOLOGIK_RULE_EN_US' in match['rule']['id'] or 'SPELLER' in match['rule']['id']:
+                    # This is a spelling mistake
+                    spelling_feedback.append(f"Spelling mistake: '{match['context']['text']}' should be corrected to {match['replacements']}")
+                else:
+                    # This is a grammar issue
+                    grammar_issues.append(match['message'])
+                
+                # Check if replacements exist for the words that are wrongly used
+                if match['replacements']:
+                    for replacement in match['replacements']:
+                        word_suggestions.append(f"{match['context']['text']} -> use {replacement['value']}")
 
-        return jsonify(feedback)
+            feedback = {
+                'grammar_issues': grammar_issues if grammar_issues else ["No grammar issues found"],
+                'spelling_feedback': spelling_feedback if spelling_feedback else ["No spelling issues found"],
+                'word_suggestions': word_suggestions if word_suggestions else ["No word usage errors found"],
+                'corrected_text': json_response['matches']
+            }
+
+            return jsonify(feedback)
+
+        else:
+            return jsonify({'error': 'Error in LanguageTool API request'}), 500
+
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
