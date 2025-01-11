@@ -158,11 +158,26 @@ def node_practice():
 @app.route('/python-practice')
 def python_practice():
     return render_template('python-practice.html')
+@app.route('/js-practice')
+def js_practice():
+    return render_template('js-practice.html')
+@app.route('/react-practice')
+def react_practice():
+    return render_template('react-practice.html')
+@app.route('/ml-practice')
+def ml_practice():
+    return render_template('ml-practice.html')
+@app.route('/ai-practice')
+def ai_practice():
+    return render_template('ai-practice.html')
 
 @app.route('/sample')
 def sample():
     # Render the Technical Interview practice page
     return render_template('sample.html')
+@app.route('/tutorials')
+def tutorials():
+    return render_template('tutorials.html')
 @app.route('/hr-practice')
 def hr_practice():
     # Render the HR Interview practice page
