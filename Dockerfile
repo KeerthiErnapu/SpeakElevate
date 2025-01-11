@@ -3,11 +3,13 @@ FROM openjdk:17-jdk-slim
 
 # Install Python 3 and dependencies
 RUN apt-get update -y && \
-    apt-get install -y python3 python3-pip python3-venv
+    apt-get install -y python3 python3-pip python3-venv && \
+    ln -s /usr/bin/python3 /usr/bin/python && \
+    apt-get clean
 
 # Verify Java and Python installations
 RUN java -version
-RUN python3 --version
+RUN python --version
 RUN pip3 --version
 
 # Set the working directory (adjust if your app is in another folder)
@@ -17,7 +19,7 @@ WORKDIR /app
 COPY . /app
 
 # Install Python dependencies
-RUN pip install -r requirements.txt
+RUN pip3 install -r requirements.txt
 
 # Expose necessary port (adjust as needed for your application)
 EXPOSE 5000
