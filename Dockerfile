@@ -17,10 +17,10 @@ WORKDIR /app
 COPY . /app
 
 # Install Python dependencies
-RUN pip3 install -r requirements.txt
+RUN pip install -r requirements.txt
 
 # Expose necessary port (adjust as needed for your application)
 EXPOSE 5000
 
 # Default command to run the Python app (using the CMD from Dockerfile)
-CMD ["python3", "app.py"]
+CMD ["python", "app.py"]
