@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grammar Tutorials</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+        }
+
+        header {
+            background-color: #0078d7;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        /* Styling for the Back Button */
+        .back-button {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: #ff5733;
+            color: white;
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .back-button:hover {
+            background-color: #e04e28;
+        }
+
+        .button {
+            background-color: #0078d7;
+            color: white;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+
+        .button:hover {
+            background-color: #005bb5;
+        }
+
+        .tutorial-section {
+            margin: 20px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            display: none; /* Initially hidden */
+        }
+
+        .tutorial-section.active {
+            display: block; /* Show when active */
+        }
+
+        .tutorial-section h2 {
+            color: #0078d7;
+        }
+
+        .tutorial-section h3 {
+            margin-top: 20px;
+            font-size: 20px;
+            color: #333;
+        }
+
+        .tutorial-section p {
+            font-size: 16px;
+            color: #555;
+        }
+
+        .word-of-the-day {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .word-of-the-day h4 {
+            color: #0078d7;
+        }
+
+        .word-of-the-day p {
+            font-size: 18px;
+            color: #333;
+        }
+
+        .word-of-the-day-button {
+            background-color: #ff9f00;
+            color: white;
+            padding: 10px 15px;
+            font-size: 16px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+
+        .word-of-the-day-button:hover {
+            background-color: #e68900;
+        }
+
+        .preposition-button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 8px 15px;
+            font-size: 16px;
+            border: none;
+            cursor: pointer;
+            margin: 5px;
+            border-radius: 5px;
+        }
+
+        .preposition-button:hover {
+            background-color: #45a049;
+        }
+
+        .preposition-explanation {
+            margin-top: 15px;
+            font-size: 16px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Grammar Tutorials</h1>
+        <!-- Back Button -->
+        <button class="back-button" onclick="window.location.href='/sample'">Back</button>
+    </header>
+
+    <main>
+        <!-- Navigation Buttons -->
+        <div style="text-align:center;">
+            <button class="button" onclick="toggleSection('tenses')">Tenses</button>
+            <button class="button" onclick="toggleSection('articles')">Articles</button>
+            <button class="button" onclick="toggleSection('prepositions')">Prepositions</button>
+            <button class="button" onclick="toggleSection('vocabulary')">Vocabulary</button>
+        </div>
+
+        <!-- Tenses Section -->
+        <div class="tutorial-section" id="tenses">
+            <h2>Tenses</h2>
+            <p><strong>Tenses</strong> are used to indicate the time of action. There are three main tenses in English: Present, Past, and Future. Each tense has four forms:</p>
+            <h3>1. Present Tense:</h3>
+            <p>Indicates actions happening right now or regularly. Example: <em>I play football every day.</em></p>
+            <h3>2. Past Tense:</h3>
+            <p>Describes actions that have already happened. Example: <em>I played football yesterday.</em></p>
+            <h3>3. Future Tense:</h3>
+            <p>Indicates actions that will happen. Example: <em>I will play football tomorrow.</em></p>
+            <h3>4. Present Continuous:</h3>
+            <p>Describes actions happening now. Example: <em>I am playing football right now.</em></p>
+            <h3>5. Past Continuous:</h3>
+            <p>Describes actions that were happening at a specific point in the past. Example: <em>I was playing football when you called me.</em></p>
+            <h3>6. Future Continuous:</h3>
+            <p>Describes actions that will be happening at a specific point in the future. Example: <em>I will be playing football at 5 PM tomorrow.</em></p>
+            <h3>7. Present Perfect:</h3>
+            <p>Describes actions that have happened at an unspecified time. Example: <em>I have played football before.</em></p>
+            <h3>8. Past Perfect:</h3>
+            <p>Describes actions that were completed before another event in the past. Example: <em>I had played football before it started raining.</em></p>
+            <h3>9. Future Perfect:</h3>
+            <p>Describes actions that will be completed by a certain time in the future. Example: <em>I will have played football by 6 PM.</em></p>
+        </div>
+
+        <!-- Articles Section -->
+        <div class="tutorial-section" id="articles">
+            <h2>Articles</h2>
+            <p><strong>Articles</strong> are used to define nouns. There are two types of articles in English:</p>
+            <h3>1. Definite Article:</h3>
+            <p><strong>The</strong> is used to refer to something specific. Example: <em>The book on the table is mine.</em></p>
+            <h3>2. Indefinite Articles:</h3>
+            <p><strong>A</strong> and <strong>An</strong> are used to refer to non-specific things. Example: <em>A dog is barking outside. An apple a day keeps the doctor away.</em></p>
+        </div>
+
+        <!-- Prepositions Section -->
+        <div class="tutorial-section" id="prepositions">
+            <h2>Prepositions</h2>
+            <p><strong>Prepositions</strong> are words that show the relationship between a noun or pronoun and another word in the sentence. Some common prepositions are:</p>
+            <button class="preposition-button" onclick="showExplanation('in')">In</button>
+            <button class="preposition-button" onclick="showExplanation('on')">On</button>
+            <button class="preposition-button" onclick="showExplanation('at')">At</button>
+            <button class="preposition-button" onclick="showExplanation('by')">By</button>
+            <button class="preposition-button" onclick="showExplanation('with')">With</button>
+
+            <div id="prepositionExplanation" class="preposition-explanation"></div>
+        </div>
+
+        <!-- Vocabulary Section -->
+        <div class="tutorial-section" id="vocabulary">
+            <h2>Vocabulary</h2>
+            <div class="word-of-the-day">
+                <h4>Word of the Day</h4>
+                <button class="word-of-the-day-button" id="wordButton" onclick="showWord()">Learn a Word</button>
+                <div id="wordDetails" style="display: none;">
+                    <p><strong id="word"></strong></p>
+                    <p><strong>Meaning:</strong> <span id="meaning"></span></p>
+                    <p><strong>Example:</strong> <span id="example"></span></p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Function to toggle visibility of each section
+        function toggleSection(sectionId) {
+            // Hide all sections
+            const sections = document.querySelectorAll('.tutorial-section');
+            sections.forEach((section) => {
+                section.classList.remove('active');
+            });
+
+            // Show the clicked section
+            const section = document.getElementById(sectionId);
+            section.classList.add('active');
+        }
+
+        // Word of the day functionality
+        const words = [
+        { word: "Eloquent", meaning: "Fluent or persuasive in speaking or writing.", example: "The speaker gave an eloquent speech." },
+        { word: "Serendipity", meaning: "The occurrence of events by chance in a happy or beneficial way.", example: "It was pure serendipity that they met at the café." },
+        { word: "Ephemeral", meaning: "Lasting for a very short time.", example: "The beauty of the sunset was ephemeral." },
+        { word: "Pernicious", meaning: "Having a harmful effect, especially in a gradual or subtle way.", example: "The pernicious effects of smoking are well documented." },
+        { word: "Obfuscate", meaning: "To deliberately make something unclear or difficult to understand.", example: "The politician's speech only served to obfuscate the issue." },
+        { word: "Cacophony", meaning: "A harsh, discordant mixture of sounds.", example: "The cacophony of car horns filled the street." },
+        { word: "Pantomime", meaning: "The expression of meaning through gestures and movements without words.", example: "He communicated his thoughts through pantomime." },
+        { word: "Incessant", meaning: "Never stopping, going on all the time.", example: "The incessant noise from the construction site was unbearable." },
+        { word: "Epiphany", meaning: "A sudden realization or understanding.", example: "She had an epiphany about her career path." },
+        { word: "Nebulous", meaning: "In the form of a cloud or haze; hazy.", example: "The future seemed nebulous and uncertain." },
+        { word: "Ineffable", meaning: "Too great or extreme to be expressed in words.", example: "The beauty of the sunset was ineffable." },
+        { word: "Surreptitious", meaning: "Kept secret, especially because it would not be approved of.", example: "They exchanged surreptitious glances." },
+        { word: "Quixotic", meaning: "Exceedingly idealistic, unrealistic and impractical.", example: "His quixotic plans to change the world were met with skepticism." },
+        { word: "Effervescent", meaning: "Vivacious and enthusiastic.", example: "Her effervescent personality lit up the room." },
+        { word: "Transitory", meaning: "Not permanent.", example: "The pain was transitory, lasting only a few minutes." },
+        { word: "Ameliorate", meaning: "To make something better.", example: "The new law is designed to ameliorate working conditions." },
+        { word: "Lethargic", meaning: "Sluggish and lacking energy.", example: "He felt lethargic after the long flight." },
+        { word: "Sycophant", meaning: "A person who acts obsequiously toward someone important in order to gain advantage.", example: "The sycophant flattered the boss in hopes of a promotion." },
+        { word: "Soliloquy", meaning: "An act of speaking one's thoughts aloud when by oneself.", example: "The actor delivered a powerful soliloquy in the play." },
+        { word: "Antithesis", meaning: "A person or thing that is the direct opposite of someone or something else.", example: "His actions were the antithesis of what he preached." },
+        { word: "Jovial", meaning: "Cheerful and friendly.", example: "He was in a jovial mood after receiving good news." },
+        { word: "Vindicate", meaning: "To clear someone of blame or suspicion.", example: "The evidence served to vindicate the accused." },
+        { word: "Placid", meaning: "Not easily upset or excited.", example: "The placid lake reflected the clear sky." },
+        { word: "Voracious", meaning: "Having"}
+        ];
+
+        let currentWordIndex = 0;
+
+        function showWord() {
+            const wordDetails = document.getElementById('wordDetails');
+            const word = words[currentWordIndex];
+            document.getElementById('word').textContent = word.word;
+            document.getElementById('meaning').textContent = word.meaning;
+            document.getElementById('example').textContent = word.example;
+            wordDetails.style.display = 'block';
+
+            // Update the word for next click
+            currentWordIndex = (currentWordIndex + 1) % words.length;
+        }
+
+        // Preposition Explanation display
+        function showExplanation(preposition) {
+            const explanations = {
+                "in": "In is used to indicate a location or position within something. Example: 'The book is in the box.'",
+                "on": "On is used to indicate a position above something, often in contact with it. Example: 'The cup is on the table.'",
+                "at": "At is used to indicate a specific location or time. Example: 'She is at the station.'",
+                "by": "By is used to indicate the proximity of something or a means of doing something. Example: 'I travel by bus.'",
+                "with": "With is used to indicate association or possession. Example: 'He came with his friend.'"
+            };
+            document.getElementById('prepositionExplanation').textContent = explanations[preposition];
+        }
+    </script>
+</body>
+</html>
