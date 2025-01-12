@@ -7,7 +7,7 @@ import os
 # Initialize Flask app
 app = Flask(__name__)
 port = int(os.environ.get('PORT', 5000))
-app.config["MONGO_URI"] = "mongodb://localhost:27017/SpeakElevate"
+app.config["MONGO_URI"] = "mongodb+srv://<keerthiernapu>:<Keerthi@08>@<cluster0.pn468.mongodb.net>/SpeakElevate?retryWrites=true&w=majority"
 mongo = PyMongo(app)
 
 # Initialize LanguageTool API for grammar and spelling checks
