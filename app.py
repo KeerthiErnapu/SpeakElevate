@@ -3,12 +3,20 @@ import requests
 from flask_pymongo import PyMongo
 import random
 import bcrypt
+import urllib.parse
 import os
 # Initialize Flask app
 app = Flask(__name__)
 port = int(os.environ.get('PORT', 5000))
-app.config["MONGO_URI"] = "mongodb+srv://<keerthiernapu>:<Keerthi@08>@<cluster0.pn468.mongodb.net>/SpeakElevate?retryWrites=true&w=majority"
-mongo = PyMongo(app)
+app.config["MONGO_URI"] = "mongodb+srv://keerthiernapu:F19gy9x62nA7lD4H@cluster0.cgxd1.mongodb.net/SpeakElevate?retryWrites=true&w=majority&appName=Cluster0"
+try:
+    mongo = PyMongo(app)
+    # Check if the connection is working
+   
+
+except Exception as e:
+    print("Error connecting to MongoDB:", e)
+    exit()
 
 # Initialize LanguageTool API for grammar and spelling checks
 
@@ -86,25 +94,30 @@ def signup():
         email = request.form['email']
         password = request.form['password']
 
-        # Check if email already exists
-        existing_user = mongo.db.demo.find_one({'email': email})
+        try:
+            # Check if email already exists
+            existing_user = mongo.db.demo.find_one({'email': email})
 
-        if existing_user:
-            # Email already exists, show error message
-            return render_template('signup.html', error="Email already exists.")
+            if existing_user:
+                # Email already exists, show error message
+                return render_template('signup.html', error="Email already exists.")
 
-        # Hash the password before storing it in the database
-        hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+            # Hash the password before storing it in the database
+            hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
 
-        # Create a new user and insert it into the database
-        mongo.db.demo.insert_one({
-            'name': name,
-            'email': email,
-            'password': hashed_password
-        })
+            # Create a new user and insert it into the database
+            mongo.db.demo.insert_one({
+                'name': name,
+                'email': email,
+                'password': hashed_password
+            })
 
-        # Redirect to the login page with a success message
-        return render_template('login.html', message="Account created successfully! Please log in.")
+            # Redirect to the login page with a success message
+            return render_template('login.html', message="Account created successfully! Please log in.")
+
+        except Exception as e:
+            # Catch any errors and show them for debugging
+            return f"Error occurred: {str(e)}"
 
     # Render the signup page if it's a GET request
     return render_template('signup.html')
@@ -115,9 +128,10 @@ def login():
         email = request.form['email']
         password = request.form['password']
         hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
-
+        print(email)
         # Check if email exists in the database
         user = mongo.db.demo.find_one({'email': email})
+        
 
         if user and bcrypt.checkpw(password.encode('utf-8'), user['password']):
             return render_template('sample.html')
