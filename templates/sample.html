@@ -119,6 +119,8 @@
         <!-- Interview Test Button -->
         <h2>Practice Interview Questions</h2>
         <button id="interview-tests" class="button">Interview Practice</button>
+        <h2>Learn Grammar</h2>
+<button id="tutorials-btn" class="button">Tutorials</button>
     </main>
 
     <script>
@@ -210,6 +212,9 @@
         interviewTestsButton.onclick = () => {
             window.location.href = "/interview-tests"; // Redirect to the interview test route
         };
+        document.getElementById("tutorials-btn").addEventListener("click", () => {
+            window.location.href = "/tutorials"; // Redirect to tutorials page
+        });
     </script>
 </body>
 </html>
